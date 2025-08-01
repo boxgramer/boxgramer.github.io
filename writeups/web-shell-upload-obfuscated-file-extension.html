@@ -1,0 +1,103 @@
+<!doctype html>
+<html lang="en">
+
+<head>
+	<meta charset="utf-8" />
+	<link rel="icon" href="../favicon.png" />
+	<meta name="viewport" content="width=device-width, initial-scale=1" />
+	
+		<link href="../_app/immutable/assets/0.DuirhDqL.css" rel="stylesheet">
+		<link rel="modulepreload" href="../_app/immutable/entry/start.CwlG-iLQ.js">
+		<link rel="modulepreload" href="../_app/immutable/chunks/CrCi_thf.js">
+		<link rel="modulepreload" href="../_app/immutable/chunks/BUl9RxAW.js">
+		<link rel="modulepreload" href="../_app/immutable/chunks/AGwufyzN.js">
+		<link rel="modulepreload" href="../_app/immutable/entry/app.7N_XEpmJ.js">
+		<link rel="modulepreload" href="../_app/immutable/chunks/CCmE3BsN.js">
+		<link rel="modulepreload" href="../_app/immutable/chunks/BI7ncmrh.js">
+		<link rel="modulepreload" href="../_app/immutable/chunks/BSdgaQjA.js">
+		<link rel="modulepreload" href="../_app/immutable/nodes/0.lE3F9uS1.js">
+		<link rel="modulepreload" href="../_app/immutable/chunks/YKOfnEHP.js">
+		<link rel="modulepreload" href="../_app/immutable/nodes/3.Bza5gJ1m.js">
+		<link rel="modulepreload" href="../_app/immutable/chunks/DIXbH3Jv.js">
+		<link rel="modulepreload" href="../_app/immutable/chunks/DmywiMXO.js">
+	<!-- Google tag (gtag.js) -->
+	<script async src="https://www.googletagmanager.com/gtag/js?id=G-R1TYCEZF9Y"></script>
+	<script>
+		window.dataLayer = window.dataLayer || [];
+		function gtag() {dataLayer.push(arguments);}
+		gtag('js', new Date());
+
+		gtag('config', 'G-R1TYCEZF9Y');
+	</script>
+
+</head>
+
+<body data-sveltekit-preload-data="hover">
+	<div style="display: contents"><!--[--><!--[--><!----><!----><!----><header class="sticky top-0 left-0 right-0 z-50 max-h-80 h-20 bg-white shadow-md flex justify-center items-center w-full"><nav class="container mx-auto flex justify-between items-center" aria-label="Main navigation"><div class="mx-6 flex gap-5 items-center cursor-pointer"><img src="/_app/immutable/assets/avatar.BpAltn8f.png" alt="Logo" class="h-12 w-12 rounded-lg"/> <h1 class="text-2xl font-bold uppercase sm:block hidden">Boxgramer</h1></div> <!--[--><h1 class="text-md font-bold uppercase block p-2">Web shell upload via obfuscated file extentiony First Writeup</h1><!--]--> <!--[--><div class="flex justify-center items-center gap-4"><!--[!--><!--]--> <!--[--><a href="/writeups/web-cache-poisoning-multiple-headers" class="text-gray-600 hover:text-gray-900 transition duration-200"><svg fill="none" viewBox="0 0 24 24" stroke-width="1.5" stroke="currentColor" aria-hidden="true" xmlns="http://www.w3.org/2000/svg" width="24px" height="24px"><!--[--><path stroke-linecap="round" stroke-linejoin="round" d="M13.5 4.5 21 12m0 0-7.5 7.5M21 12H3"></path><!--]--></svg><!----></a><!--]--></div><!--]--></nav></header><!----> <main class="container mx-auto max-w-6xl px-6 py-12"><div class="content"><!----><h1>Note(Datetime, Name) : 2025-04-22 , Web shell upload via obfuscated file extention</h1>
+<h3>Metodelogy</h3>
+<ol>
+<li>Investigate the system to retrieve a list of features</li>
+<li>Discribe the feature and explain how it works</li>
+<li>List possible vulnerabilities and group by feature</li>
+<li>Proof of concept for possible vulnerabilities</li>
+<li>What is the impact of the vulnerabilities after the proof of concept ?</li>
+</ol>
+<h1>==========================================================================================================</h1>
+<blockquote>
+</blockquote>
+<h2>feature:</h2>
+<ol>
+<li>file upload avatar -&gt; /my-account</li>
+</ol>
+<h3>steps taken:</h3>
+<pre><code>1. upload .php file -&gt; rejected -&gt; only support png and jpg
+2. file input don&#39;t have filter file 
+3. .pHp -&gt; 403
+4. .php.jpg -&gt; 200
+5. .php%00.jpg -&gt; 200 -&gt; file save as .php
+</code></pre>
+<h2>vulnerabilities :</h2>
+<h3>file upload vulnerabilities with .ph%00.jpg</h3>
+<h4>Proof of concept:</h4>
+<pre><code>1. capture request upload image by proxy
+2. change filename parameter request with &lt;filename&gt;.php%00.jpg
+3. file is save as &lt;filename&gt;.php
+4. try request to  &lt;host&gt;/files/avatars/&lt;filename&gt;.php 
+5. done php code is running
+</code></pre>
+<h4>impact</h4>
+<pre><code>- **Remote Code Execution (RCE)**: An attacker can upload and execute arbitrary PHP code on the server.
+- This leads to full server compromise depending on the code&#39;s capabilities and server permissions.
+</code></pre>
+<h4>takeaways</h4>
+<pre><code>- Null bypte injection (&#39;%00&#39;) can bypass poorly impleneted extention blacklist.
+- Always validate and sanitize file uploads on the server side
+- Relying solely on file extention filtering is **not sufficient** for secure file upload handling
+</code></pre>
+<!----></div></main> <footer class="bg-gray-50 border-t border-gray-200 py-6"><div class="container mx-auto max-w-6xl px-6 flex flex-col md:flex-row justify-center items-center space-y-4 md:space-y-0"><p class="text-sm text-gray-600">© 2023 Boxgramer. All rights reserved.</p> <!--[!--><!--]--></div></footer><!----><!----><!----><!----><!--]--> <!--[!--><!--]--><!--]-->
+			
+			<script>
+				{
+					__sveltekit_qchkt = {
+						base: new URL("..", location).pathname.slice(0, -1)
+					};
+
+					const element = document.currentScript.parentElement;
+
+					Promise.all([
+						import("../_app/immutable/entry/start.CwlG-iLQ.js"),
+						import("../_app/immutable/entry/app.7N_XEpmJ.js")
+					]).then(([kit, app]) => {
+						kit.start(app, element, {
+							node_ids: [0, 3],
+							data: [null,{type:"data",data:{html:"\u003Ch1>Note(Datetime, Name) : 2025-04-22 , Web shell upload via obfuscated file extention\u003C/h1>\n\u003Ch3>Metodelogy\u003C/h3>\n\u003Col>\n\u003Cli>Investigate the system to retrieve a list of features\u003C/li>\n\u003Cli>Discribe the feature and explain how it works\u003C/li>\n\u003Cli>List possible vulnerabilities and group by feature\u003C/li>\n\u003Cli>Proof of concept for possible vulnerabilities\u003C/li>\n\u003Cli>What is the impact of the vulnerabilities after the proof of concept ?\u003C/li>\n\u003C/ol>\n\u003Ch1>==========================================================================================================\u003C/h1>\n\u003Cblockquote>\n\u003C/blockquote>\n\u003Ch2>feature:\u003C/h2>\n\u003Col>\n\u003Cli>file upload avatar -&gt; /my-account\u003C/li>\n\u003C/ol>\n\u003Ch3>steps taken:\u003C/h3>\n\u003Cpre>\u003Ccode>1. upload .php file -&gt; rejected -&gt; only support png and jpg\n2. file input don&#39;t have filter file \n3. .pHp -&gt; 403\n4. .php.jpg -&gt; 200\n5. .php%00.jpg -&gt; 200 -&gt; file save as .php\n\u003C/code>\u003C/pre>\n\u003Ch2>vulnerabilities :\u003C/h2>\n\u003Ch3>file upload vulnerabilities with .ph%00.jpg\u003C/h3>\n\u003Ch4>Proof of concept:\u003C/h4>\n\u003Cpre>\u003Ccode>1. capture request upload image by proxy\n2. change filename parameter request with &lt;filename&gt;.php%00.jpg\n3. file is save as &lt;filename&gt;.php\n4. try request to  &lt;host&gt;/files/avatars/&lt;filename&gt;.php \n5. done php code is running\n\u003C/code>\u003C/pre>\n\u003Ch4>impact\u003C/h4>\n\u003Cpre>\u003Ccode>- **Remote Code Execution (RCE)**: An attacker can upload and execute arbitrary PHP code on the server.\n- This leads to full server compromise depending on the code&#39;s capabilities and server permissions.\n\u003C/code>\u003C/pre>\n\u003Ch4>takeaways\u003C/h4>\n\u003Cpre>\u003Ccode>- Null bypte injection (&#39;%00&#39;) can bypass poorly impleneted extention blacklist.\n- Always validate and sanitize file uploads on the server side\n- Relying solely on file extention filtering is **not sufficient** for secure file upload handling\n\u003C/code>\u003C/pre>\n",slug:"web-shell-upload-obfuscated-file-extension",title:"Web shell upload via obfuscated file extentiony First Writeup",date:"2025-04-22",summary:"Bypassed file upload filter using null byte (%00) to upload a PHP web shell, causing Remote Code Execution (RCE) due to weak server-side validation.",url:"/writeups/web-shell-upload-obfuscated-file-extension",nextUrl:"/writeups/web-cache-poisoning-multiple-headers",prevUrl:null},uses:{params:["slug"]}}],
+							form: null,
+							error: null
+						});
+					});
+				}
+			</script>
+		</div>
+</body>
+
+</html>

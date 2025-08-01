@@ -1,0 +1,102 @@
+<!doctype html>
+<html lang="en">
+
+<head>
+	<meta charset="utf-8" />
+	<link rel="icon" href="../favicon.png" />
+	<meta name="viewport" content="width=device-width, initial-scale=1" />
+	
+		<link href="../_app/immutable/assets/0.DuirhDqL.css" rel="stylesheet">
+		<link rel="modulepreload" href="../_app/immutable/entry/start.CwlG-iLQ.js">
+		<link rel="modulepreload" href="../_app/immutable/chunks/CrCi_thf.js">
+		<link rel="modulepreload" href="../_app/immutable/chunks/BUl9RxAW.js">
+		<link rel="modulepreload" href="../_app/immutable/chunks/AGwufyzN.js">
+		<link rel="modulepreload" href="../_app/immutable/entry/app.7N_XEpmJ.js">
+		<link rel="modulepreload" href="../_app/immutable/chunks/CCmE3BsN.js">
+		<link rel="modulepreload" href="../_app/immutable/chunks/BI7ncmrh.js">
+		<link rel="modulepreload" href="../_app/immutable/chunks/BSdgaQjA.js">
+		<link rel="modulepreload" href="../_app/immutable/nodes/0.lE3F9uS1.js">
+		<link rel="modulepreload" href="../_app/immutable/chunks/YKOfnEHP.js">
+		<link rel="modulepreload" href="../_app/immutable/nodes/3.Bza5gJ1m.js">
+		<link rel="modulepreload" href="../_app/immutable/chunks/DIXbH3Jv.js">
+		<link rel="modulepreload" href="../_app/immutable/chunks/DmywiMXO.js">
+	<!-- Google tag (gtag.js) -->
+	<script async src="https://www.googletagmanager.com/gtag/js?id=G-R1TYCEZF9Y"></script>
+	<script>
+		window.dataLayer = window.dataLayer || [];
+		function gtag() {dataLayer.push(arguments);}
+		gtag('js', new Date());
+
+		gtag('config', 'G-R1TYCEZF9Y');
+	</script>
+
+</head>
+
+<body data-sveltekit-preload-data="hover">
+	<div style="display: contents"><!--[--><!--[--><!----><!----><!----><header class="sticky top-0 left-0 right-0 z-50 max-h-80 h-20 bg-white shadow-md flex justify-center items-center w-full"><nav class="container mx-auto flex justify-between items-center" aria-label="Main navigation"><div class="mx-6 flex gap-5 items-center cursor-pointer"><img src="/_app/immutable/assets/avatar.BpAltn8f.png" alt="Logo" class="h-12 w-12 rounded-lg"/> <h1 class="text-2xl font-bold uppercase sm:block hidden">Boxgramer</h1></div> <!--[--><h1 class="text-md font-bold uppercase block p-2"> Web cache poisoning via a fat GET request</h1><!--]--> <!--[--><div class="flex justify-center items-center gap-4"><!--[--><a href="/writeups/parameter-cloaking" class="text-gray-600 hover:text-gray-900 transition duration-200"><svg fill="none" viewBox="0 0 24 24" stroke-width="1.5" stroke="currentColor" aria-hidden="true" xmlns="http://www.w3.org/2000/svg" width="24px" height="24px"><!--[--><path stroke-linecap="round" stroke-linejoin="round" d="M10.5 19.5 3 12m0 0 7.5-7.5M3 12h18"></path><!--]--></svg><!----></a><!--]--> <!--[--><a href="/writeups/web-cache-poisoning-dom-vulnerability" class="text-gray-600 hover:text-gray-900 transition duration-200"><svg fill="none" viewBox="0 0 24 24" stroke-width="1.5" stroke="currentColor" aria-hidden="true" xmlns="http://www.w3.org/2000/svg" width="24px" height="24px"><!--[--><path stroke-linecap="round" stroke-linejoin="round" d="M13.5 4.5 21 12m0 0-7.5 7.5M21 12H3"></path><!--]--></svg><!----></a><!--]--></div><!--]--></nav></header><!----> <main class="container mx-auto max-w-6xl px-6 py-12"><div class="content"><!----><h1>Note(Datetime, Name) : 2025-04-30  Web cache poisoning via a fat GET request</h1>
+<h3>Metodelogy</h3>
+<ol>
+<li>Investigate the system to retrieve a list of features</li>
+<li>Discribe the feature and explain how it works</li>
+<li>List possible vulnerabilities and group by feature</li>
+<li>Proof of concept for possible vulnerabilities</li>
+<li>What is the impact of the vulnerabilities after the proof of concept ?</li>
+</ol>
+<h1>==========================================================================================================</h1>
+<blockquote>
+</blockquote>
+<h2>feature:</h2>
+<ol>
+<li>GET / -&gt; Home</li>
+</ol>
+<h3>steps taken:</h3>
+<ol>
+<li>access GET /js/geolocate.js?callback=setCountryCookie&amp;utm_content&amp;utm_content=sdfaf&amp;utm_content=sdfaf&amp;utm_content=sdfaf&amp;utm_content=sdfaf&amp;utm_content=sd&amp;callback=test -&gt; cache miss</li>
+<li>access GET /js/geolocate.js?callback=setCountryCookie with body callback=test -&gt; cache miss but callback value was overridden  to test, try again until cache hit</li>
+<li>access GET /js/geolocate.js?callback=setCountryCookie without body callback=test-&gt; cahce hit and callback value was still test</li>
+</ol>
+<h2>vulnerabilities :</h2>
+<ol>
+<li>web cache poisoning in /js/geolocate.js due to the server read improperly reading parameters from body of a GET request</li>
+</ol>
+<h2>Proof of concept:</h2>
+<ol>
+<li>access GET /js/geolocate.js?callback=setCountryCookie with body callback=alert(1) -&gt; retry until cache hit is observed</li>
+<li>access to /  -&gt; cached malicious javascript is loaded and alert is triggered in victim browser</li>
+</ol>
+<h2>impact</h2>
+<ol>
+<li>an attacker can inject  and store malicious javascript in the cache. When a victim accesses the cache page , the script executes, potentially leading to cookie theft or other XSS-based attacks</li>
+</ol>
+<h2>takeaways</h2>
+<ol>
+<li>sanitize all query parameter and prevent uninteded behavior from duplicated keys</li>
+<li>block or ignore body parsing on GET request</li>
+</ol>
+<!----></div></main> <footer class="bg-gray-50 border-t border-gray-200 py-6"><div class="container mx-auto max-w-6xl px-6 flex flex-col md:flex-row justify-center items-center space-y-4 md:space-y-0"><p class="text-sm text-gray-600">© 2023 Boxgramer. All rights reserved.</p> <!--[!--><!--]--></div></footer><!----><!----><!----><!----><!--]--> <!--[!--><!--]--><!--]-->
+			
+			<script>
+				{
+					__sveltekit_qchkt = {
+						base: new URL("..", location).pathname.slice(0, -1)
+					};
+
+					const element = document.currentScript.parentElement;
+
+					Promise.all([
+						import("../_app/immutable/entry/start.CwlG-iLQ.js"),
+						import("../_app/immutable/entry/app.7N_XEpmJ.js")
+					]).then(([kit, app]) => {
+						kit.start(app, element, {
+							node_ids: [0, 3],
+							data: [null,{type:"data",data:{html:"\u003Ch1>Note(Datetime, Name) : 2025-04-30  Web cache poisoning via a fat GET request\u003C/h1>\n\u003Ch3>Metodelogy\u003C/h3>\n\u003Col>\n\u003Cli>Investigate the system to retrieve a list of features\u003C/li>\n\u003Cli>Discribe the feature and explain how it works\u003C/li>\n\u003Cli>List possible vulnerabilities and group by feature\u003C/li>\n\u003Cli>Proof of concept for possible vulnerabilities\u003C/li>\n\u003Cli>What is the impact of the vulnerabilities after the proof of concept ?\u003C/li>\n\u003C/ol>\n\u003Ch1>==========================================================================================================\u003C/h1>\n\u003Cblockquote>\n\u003C/blockquote>\n\u003Ch2>feature:\u003C/h2>\n\u003Col>\n\u003Cli>GET / -&gt; Home\u003C/li>\n\u003C/ol>\n\u003Ch3>steps taken:\u003C/h3>\n\u003Col>\n\u003Cli>access GET /js/geolocate.js?callback=setCountryCookie&amp;utm_content&amp;utm_content=sdfaf&amp;utm_content=sdfaf&amp;utm_content=sdfaf&amp;utm_content=sdfaf&amp;utm_content=sd&amp;callback=test -&gt; cache miss\u003C/li>\n\u003Cli>access GET /js/geolocate.js?callback=setCountryCookie with body callback=test -&gt; cache miss but callback value was overridden  to test, try again until cache hit\u003C/li>\n\u003Cli>access GET /js/geolocate.js?callback=setCountryCookie without body callback=test-&gt; cahce hit and callback value was still test\u003C/li>\n\u003C/ol>\n\u003Ch2>vulnerabilities :\u003C/h2>\n\u003Col>\n\u003Cli>web cache poisoning in /js/geolocate.js due to the server read improperly reading parameters from body of a GET request\u003C/li>\n\u003C/ol>\n\u003Ch2>Proof of concept:\u003C/h2>\n\u003Col>\n\u003Cli>access GET /js/geolocate.js?callback=setCountryCookie with body callback=alert(1) -&gt; retry until cache hit is observed\u003C/li>\n\u003Cli>access to /  -&gt; cached malicious javascript is loaded and alert is triggered in victim browser\u003C/li>\n\u003C/ol>\n\u003Ch2>impact\u003C/h2>\n\u003Col>\n\u003Cli>an attacker can inject  and store malicious javascript in the cache. When a victim accesses the cache page , the script executes, potentially leading to cookie theft or other XSS-based attacks\u003C/li>\n\u003C/ol>\n\u003Ch2>takeaways\u003C/h2>\n\u003Col>\n\u003Cli>sanitize all query parameter and prevent uninteded behavior from duplicated keys\u003C/li>\n\u003Cli>block or ignore body parsing on GET request\u003C/li>\n\u003C/ol>\n",slug:"web-cache-poisoning-fat-get-request",title:" Web cache poisoning via a fat GET request",date:"2025-04-30",summary:"Web cache poisoning via fat GET request with body allows script injection due to improper parameter parsing, enabling XSS and session hijacking risks.",url:"/writeups/web-cache-poisoning-fat-get-request",nextUrl:"/writeups/web-cache-poisoning-dom-vulnerability",prevUrl:"/writeups/parameter-cloaking"},uses:{params:["slug"]}}],
+							form: null,
+							error: null
+						});
+					});
+				}
+			</script>
+		</div>
+</body>
+
+</html>
